@@ -13,12 +13,11 @@ if [ -z "${INPUT_PATH}" ]; then
     exit 1
 fi
 
-WORKDIR=/usr/home/STTN2
+WORKDIR=/usr/home/STTN
 
 docker run \
     -it \
     --rm \
     --gpus=all \
-    -v $(dirname $(pwd))/:${WORKDIR} \
     -v "${INPUT_PATH}":"${WORKDIR}/content" \
     sttn
