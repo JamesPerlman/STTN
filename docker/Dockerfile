@@ -42,7 +42,7 @@ RUN pip install https://download.pytorch.org/whl/cu101/torch-1.3.0-cp36-cp36m-ma
 # Clone github repo
 
 RUN git clone https://github.com/JamesPerlman/STTN.git ${PROJ_PATH} && \
-    echo Cache busting... cloning commit ef89c48
+    echo Cache busting... cloning commit 2ba8eb1
 
 WORKDIR ${PROJ_PATH}
 
