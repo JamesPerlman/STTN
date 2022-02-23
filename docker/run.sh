@@ -13,7 +13,7 @@ if [ -z "${INPUT_PATH}" ]; then
     exit 1
 fi
 
-WORKDIR=/usr/home/STTN
+WORKDIR=/home/STTN
 
 docker run \
     -it \

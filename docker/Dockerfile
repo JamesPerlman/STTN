@@ -6,7 +6,7 @@ FROM nvidia/cuda:10.1-cudnn8-devel-ubuntu18.04 AS main
 
 # Set up CUDA build machine
 ENV DEBIAN_FRONTEND noninteractive
-ENV HOME_PATH=/usr/home
+ENV HOME_PATH=/home
 ENV PROJ_PATH=${HOME_PATH}/STTN
 
 # We just need conda from the alpine miniconda build
