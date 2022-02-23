@@ -51,9 +51,11 @@ if mask_path.is_file():
 
 # get video properties
 video_path = Path(args.video)
-w, h = ffmpeg.get_dimensions(video_path)
-w = 960
-h = 960
+orig_w, orig_h = ffmpeg.get_dimensions(video_path)
+w = orig_w // 64 * 64
+h = orig_h // 64 * 64
+w = w // 2
+h = h // 2
 ref_length = 10
 neighbor_stride = 5
 default_fps = int(eval(ffmpeg.get_fps(video_path)))
@@ -63,6 +65,8 @@ _to_tensors = transforms.Compose([
     ToTorchFormatTensor()])
 
 # sample reference frames from the whole video
+
+
 def get_ref_index(neighbor_ids, length):
     ref_index = []
     for i in range(0, length, ref_length):
@@ -154,21 +158,24 @@ def main_worker():
                 else:
                     comp_frames[idx] = comp_frames[idx].astype(
                         np.float32)*0.5 + img.astype(np.float32)*0.5
-    
+
     mask_path = Path(args.mask)
     video_path = Path(args.video)
     output_path = Path(f"{video_path.parent}/{video_path.stem}_result.mp4")
 
     writer = cv2.VideoWriter(str(output_path), cv2.VideoWriter_fourcc(
-        *"mp4v"), default_fps, (w, h))
+        *"mp4v"), default_fps, (orig_w, orig_h))
     for f in range(video_length):
         comp = np.array(comp_frames[f]).astype(
             np.uint8)*binary_masks[f] + frames[f] * (1-binary_masks[f])
-        writer.write(cv2.cvtColor(
-            np.array(comp).astype(np.uint8), cv2.COLOR_BGR2RGB))
+        frame = cv2.resize(
+            cv2.cvtColor(np.array(comp).astype(np.uint8), cv2.COLOR_BGR2RGB),
+            (orig_w, orig_h),
+            interpolation = cv2.INTER_CUBIC
+        )
+        writer.write(frame)
     writer.release()
     print(f'Result in {output_path}')
-
 
 
 if __name__ == '__main__':
